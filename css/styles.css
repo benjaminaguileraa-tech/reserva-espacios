@@ -1,0 +1,38 @@
+/* Importar tipografía de Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f7f6 !important;
+}
+
+/* Efecto hover en las tarjetas de espacios para interactividad */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+/* Personalización de la barra de navegación */
+.navbar {
+    background: linear-gradient(135deg, #0d6efd 0%, #0043a8 100%) !important;
+    border-bottom: 3px solid #ffc107;
+}
+
+/* Estilo personalizado para el panel de reservas */
+#contenedor-reservas {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+#contenedor-reservas::-webkit-scrollbar {
+    width: 8px;
+}
+
+#contenedor-reservas::-webkit-scrollbar-thumb {
+    background-color: #198754;
+    border-radius: 10px;
+}
