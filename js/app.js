@@ -26,20 +26,40 @@ const espaciosUniversitarios = [
     }
 ];
 
-// Arreglo para guardar las reservas del usuario
+// Variables globales del sistema
 let misReservas = [];
+let correoUsuarioActual = "";
+let espacioSeleccionado = null; 
 
-// 2. Manipulación del DOM: Función para dibujar las tarjetas
-function renderizarEspacios(espacios) {
-    // "Enganchamos" el contenedor vacío que dejamos en el HTML
-    const contenedor = document.getElementById("contenedor-espacios");
+// 2. Inicialización de Modales y Evento de Carga Principal
+let modalLogin;
+let modalReserva;
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Instanciamos los modales de Bootstrap una vez que cargó el HTML
+    modalLogin = new bootstrap.Modal(document.getElementById('modalLogin'));
+    modalReserva = new bootstrap.Modal(document.getElementById('modalReserva'));
     
-    // Limpiamos el texto inicial de "Cargando espacios..."
+    // Mostramos el login obligatorio y dibujamos las tarjetas
+    modalLogin.show();
+    renderizarEspacios(espaciosUniversitarios);
+});
+
+// 3. Lógica de inicio de sesión simulado
+document.getElementById("formulario-login").addEventListener("submit", (evento) => {
+    evento.preventDefault();
+    correoUsuarioActual = document.getElementById("login-email").value;
+    
+    console.log(`Sesión iniciada como: ${correoUsuarioActual}`);
+    modalLogin.hide();
+});
+
+// 4. Función para dibujar las tarjetas de los espacios
+function renderizarEspacios(espacios) {
+    const contenedor = document.getElementById("contenedor-espacios");
     contenedor.innerHTML = ""; 
 
-    // Ciclo para recorrer cada espacio del arreglo
     espacios.forEach(espacio => {
-        // Construimos el HTML de la tarjeta de Bootstrap para cada espacio
         const tarjetaHTML = `
             <div class="col-md-6">
                 <div class="card h-100 shadow-sm border-0 border-start border-primary border-4">
@@ -55,102 +75,89 @@ function renderizarEspacios(espacios) {
                 </div>
             </div>
         `;
-        // Inyectamos la tarjeta en el contenedor
         contenedor.innerHTML += tarjetaHTML;
     });
 }
 
-// 3. Evento inicial: Ejecutar la función cuando la página cargue
-document.addEventListener("DOMContentLoaded", () => {
-    renderizarEspacios(espaciosUniversitarios);
-});
-
-// 4. Lógica de los filtros (Eventos y manipulación de Arrays)
+// 5. Lógica de los filtros de búsqueda
 document.getElementById("btn-filtrar").addEventListener("click", () => {
-    
-    // Capturamos lo que el usuario seleccionó en los menús desplegables
     const edificioSeleccionado = document.getElementById("filtro-edificio").value;
     const tipoSeleccionado = document.getElementById("filtro-tipo").value;
 
-    // Filtramos el arreglo original basado en las selecciones
     const espaciosFiltrados = espaciosUniversitarios.filter(espacio => {
-        // Verificamos si el edificio coincide (o si eligió "Todos")
         const coincideEdificio = (edificioSeleccionado === "todos") || (espacio.ubicacion === edificioSeleccionado);
-        
-        // Verificamos si el tipo de espacio coincide (o si eligió "Todos")
         const coincideTipo = (tipoSeleccionado === "todos") || (espacio.tipo === tipoSeleccionado);
-        
-        // El espacio solo se muestra si cumple ambas condiciones
         return coincideEdificio && coincideTipo;
     });
 
-    // Volvemos a dibujar las tarjetas en el DOM, pero solo con las filtradas
     renderizarEspacios(espaciosFiltrados);
 });
-// 5. Instanciar el Modal de Bootstrap en JavaScript
-const modalReserva = new bootstrap.Modal(document.getElementById('modalReserva'));
-let espacioSeleccionado = null; // Variable para saber qué sala se está reservando
 
-// 6. Función para abrir el formulario (Llamada desde el botón de la tarjeta)
+// 6. Función para abrir el formulario de reserva
 function abrirFormulario(idEspacio) {
-    // Buscamos el objeto completo de la sala usando .find()
     espacioSeleccionado = espaciosUniversitarios.find(espacio => espacio.id === idEspacio);
-    
-    // Cambiamos el título del modal dinámicamente
     document.getElementById("titulo-modal").innerText = `Reserva: ${espacioSeleccionado.nombre}`;
-    
-    // Mostramos el modal
     modalReserva.show();
 }
 
-// 7. Validación del formulario y creación de la reserva
+// 7. Validación del formulario de reserva, control de topes y simulación de correo
 document.getElementById("formulario-reserva").addEventListener("submit", (evento) => {
-    // Evitamos que la página se recargue (comportamiento por defecto del formulario)
     evento.preventDefault();
 
     const fecha = document.getElementById("fecha-reserva").value;
     const hora = document.getElementById("hora-reserva").value;
     const mensajeError = document.getElementById("mensaje-error");
 
-    // Validación: Comprobar que los campos no estén vacíos
+    // Validación 1: Campos vacíos
     if (!fecha || !hora) {
-        mensajeError.classList.remove("d-none"); // Mostramos el error
-        return; // Cortamos la ejecución
+        mensajeError.innerText = "Por favor, completa todos los campos.";
+        mensajeError.classList.remove("d-none"); 
+        return; 
     }
 
-    // Ocultamos el error si todo está bien
+    // Validación 2: Verificar si la sala ya está ocupada en esa fecha y hora
+    const estaOcupado = misReservas.some(reserva => 
+        reserva.sala === espacioSeleccionado.nombre && 
+        reserva.fecha === fecha && 
+        reserva.hora === hora
+    );
+
+    if (estaOcupado) {
+        mensajeError.innerText = "❌ Este espacio ya se encuentra reservado en ese horario.";
+        mensajeError.classList.remove("d-none");
+        return;
+    }
+
     mensajeError.classList.add("d-none");
 
-    // Creamos el objeto de la nueva reserva
     const nuevaReserva = {
-        id: Date.now(), // Generamos un ID único con la fecha actual
+        id: Date.now(), 
         sala: espacioSeleccionado.nombre,
         fecha: fecha,
-        hora: hora
+        hora: hora,
+        usuario: correoUsuarioActual // Se vincula al correo ingresado al inicio
     };
 
-    // Agregamos la reserva al arreglo
     misReservas.push(nuevaReserva);
 
-    // Limpiamos el formulario y cerramos el modal
     document.getElementById("formulario-reserva").reset();
     modalReserva.hide();
-
-    // Actualizamos la interfaz
     renderizarReservas();
+    
+    // Alerta simulando el envío del correo electrónico
+    alert(`✅ Reserva confirmada. Se ha enviado un comprobante a ${correoUsuarioActual}`);
 });
 
-// 8. Función para mostrar las reservas en el panel derecho
+// 8. Función para mostrar las reservas activas
 function renderizarReservas() {
     const contenedorReservas = document.getElementById("contenedor-reservas");
-    contenedorReservas.innerHTML = ""; // Limpiamos el panel
+    contenedorReservas.innerHTML = ""; 
 
     if (misReservas.length === 0) {
         contenedorReservas.innerHTML = `<p class="text-muted text-center my-3">Aún no tienes reservas activas.</p>`;
         return;
     }
 
-    // Recorremos el arreglo de reservas y creamos el HTML
     misReservas.forEach(reserva => {
         const reservaHTML = `
             <div class="card mb-2 border-0 shadow-sm bg-light">
@@ -158,6 +165,7 @@ function renderizarReservas() {
                     <div>
                         <h6 class="mb-0 text-success">${reserva.sala}</h6>
                         <small class="text-muted">${reserva.fecha} | ${reserva.hora}</small>
+                        <br><small class="text-primary" style="font-size: 0.75rem;">${reserva.usuario}</small>
                     </div>
                     <button class="btn btn-sm btn-outline-danger" onclick="cancelarReserva(${reserva.id})">❌</button>
                 </div>
@@ -167,9 +175,8 @@ function renderizarReservas() {
     });
 }
 
-// 9. Función para cancelar (eliminar) una reserva
+// 9. Función para cancelar una reserva
 function cancelarReserva(idReserva) {
-    // Filtramos el arreglo dejando fuera la reserva que queremos eliminar
     misReservas = misReservas.filter(reserva => reserva.id !== idReserva);
-    renderizarReservas(); // Volvemos a dibujar el panel
+    renderizarReservas(); 
 }

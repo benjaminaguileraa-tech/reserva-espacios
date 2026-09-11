@@ -3,7 +3,11 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #f4f7f6 !important;
+    /* El gradient aplica una capa clara sobre tu imagen para no perder legibilidad */
+    background: linear-gradient(rgba(244, 247, 246, 0.85), rgba(244, 247, 246, 0.85)), url('../assets/fondo.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
 /* Efecto hover en las tarjetas de espacios para interactividad */
@@ -18,8 +22,8 @@ body {
 
 /* Personalización de la barra de navegación */
 .navbar {
-    background: linear-gradient(135deg, #0d6efd 0%, #0043a8 100%) !important;
-    border-bottom: 3px solid #ffc107;
+    background-color: #0f172a !important; /* Tono azul oscuro institucional */
+    border-bottom: 3px solid #ffc107; /* Línea amarilla inferior */
 }
 
 /* Estilo personalizado para el panel de reservas */
@@ -28,11 +32,17 @@ body {
     overflow-y: auto;
 }
 
+/* Diseño de la barra de desplazamiento (Scrollbar) */
 #contenedor-reservas::-webkit-scrollbar {
     width: 8px;
 }
 
+#contenedor-reservas::-webkit-scrollbar-track {
+    background: #e9ecef; /* Color de fondo del riel */
+    border-radius: 10px;
+}
+
 #contenedor-reservas::-webkit-scrollbar-thumb {
-    background-color: #198754;
+    background-color: #198754; /* Color de la barra móvil */
     border-radius: 10px;
 }
