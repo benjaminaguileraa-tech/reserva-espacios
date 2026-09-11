@@ -104,8 +104,18 @@
                             <input type="date" class="form-control" id="fecha-reserva" required>
                         </div>
                         <div class="mb-3">
-                            <label for="hora-reserva" class="form-label">Horario</label>
-                            <input type="time" class="form-control" id="hora-reserva" required>
+                            <label for="hora-reserva" class="form-label">Bloque Horario (45 min)</label>
+                            <select class="form-select" id="hora-reserva" required>
+                                <option value="" selected disabled>Selecciona un bloque...</option>
+                                <option value="Bloque 1 (08:30 - 09:15)">Bloque 1 (08:30 - 09:15)</option>
+                                <option value="Bloque 2 (09:15 - 10:00)">Bloque 2 (09:15 - 10:00)</option>
+                                <option value="Bloque 3 (10:15 - 11:00)">Bloque 3 (10:15 - 11:00)</option>
+                                <option value="Bloque 4 (11:00 - 11:45)">Bloque 4 (11:00 - 11:45)</option>
+                                <option value="Bloque 5 (12:00 - 12:45)">Bloque 5 (12:00 - 12:45)</option>
+                                <option value="Bloque 6 (12:45 - 13:30)">Bloque 6 (12:45 - 13:30)</option>
+                                <option value="Bloque 7 (14:30 - 15:15)">Bloque 7 (14:30 - 15:15)</option>
+                                <option value="Bloque 8 (15:15 - 16:00)">Bloque 8 (15:15 - 16:00)</option>
+                            </select>
                         </div>
                         <div id="mensaje-error" class="text-danger mb-3 d-none">
                             Por favor, completa todos los campos.
