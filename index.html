@@ -17,13 +17,15 @@
     <header>
         <nav class="navbar navbar-dark bg-primary shadow-sm">
             <div class="container">
-                <a class="navbar-brand fw-bold" href="#">🎓 ReservaEspacios</a>
+                <a class="navbar-brand fw-bold d-flex align-items-center" href="#">
+                    <img src="assets/logo.png" alt="Logo UNAB" height="40" class="bg-white rounded p-1 me-2">
+                    ReservaEspacios
+                </a>
             </div>
         </nav>
     </header>
 
     <!-- Contenido principal semántico -->
-   <!-- Contenido principal semántico -->
     <main class="container my-5">
         <div class="row">
             
@@ -86,6 +88,7 @@
             
         </div>
     </main>
+
     <!-- Modal de Reserva (Oculto por defecto) -->
     <div class="modal fade" id="modalReserva" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
@@ -108,6 +111,30 @@
                             Por favor, completa todos los campos.
                         </div>
                         <button type="submit" class="btn btn-success w-100">Confirmar Reserva</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Login Simulado -->
+    <div class="modal fade" id="modalLogin" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title">Acceso Estudiantes</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="formulario-login">
+                        <div class="mb-3">
+                            <label for="login-email" class="form-label">Correo Universitario</label>
+                            <input type="email" class="form-control" id="login-email" placeholder="ejemplo@unab.cl" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="login-pass" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="login-pass" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
                     </form>
                 </div>
             </div>
